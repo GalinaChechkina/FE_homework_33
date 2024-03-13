@@ -1,16 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-interface Post{
+interface Product{
     id: number;
     title: string;
     price: number;
     description: string;
     category: string;
-    image: string;
     rating: {rate: number, count: number}
 }
-export const loadProducts = createAsyncThunk<Post[]>(
+export const loadProducts = createAsyncThunk<Product[]>(
     "products/loadProducts",
     async () => {
       const response = await fetch("https://fakestoreapi.com/products");
@@ -19,7 +18,7 @@ export const loadProducts = createAsyncThunk<Post[]>(
     }
   );
 
-const initialState: Post[] =[];
+const initialState: Product[] =[];
 
 const productsSlice = createSlice({
     name:"products",
@@ -27,13 +26,12 @@ const productsSlice = createSlice({
     reducers:{},
     extraReducers: (builder)=> {
         builder.addCase(loadProducts.fulfilled, (state, {payload})=>{
-            state=payload;
-            console.log(payload);
+            state.push(...payload);
+            console.log(state);
         });
     }
 });
 
 export const selectProducts = (state: RootState) => state.products;
 
-// Экспорт reducer и actions
 export default productsSlice.reducer;
